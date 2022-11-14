@@ -19,6 +19,8 @@ import telran.java2022.accounting.dao.UserAccountRepository;
 import telran.java2022.accounting.model.UserAccount;
 import telran.java2022.post.dao.PostRepository;
 import telran.java2022.post.model.Post;
+import telran.java2022.security.context.SecurityContext;
+import telran.java2022.security.context.User;
 
 @Component
 @RequiredArgsConstructor
@@ -26,7 +28,7 @@ import telran.java2022.post.model.Post;
 public class DeletePostFilter implements Filter {
 
 	final PostRepository postRepository;
-	final UserAccountRepository userAccountRepository;
+	final SecurityContext context;
 
 	@Override
 	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
@@ -44,8 +46,8 @@ public class DeletePostFilter implements Filter {
 				return;
 			}
 			String author = post.getAuthor();
-			UserAccount userAccount = userAccountRepository.findById(principal.getName()).get();
-			if (!(principal.getName().equals(author) || userAccount.getRoles().contains("Moderator".toUpperCase()))) {
+			User user = context.getUser(principal.getName());
+			if (!(principal.getName().equals(author) || user.getRoles().contains("Moderator".toUpperCase()))) {
 				response.sendError(403);
 				return;
 			}

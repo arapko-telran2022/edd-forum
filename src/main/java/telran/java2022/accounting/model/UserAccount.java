@@ -12,7 +12,7 @@ import lombok.Setter;
 
 @Getter
 @EqualsAndHashCode(of = {"login"})
-@Document(collection = "users")
+@Document(collection = "user")
 public class UserAccount {
 	@Id
 	String login;
